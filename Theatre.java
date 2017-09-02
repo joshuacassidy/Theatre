@@ -8,7 +8,6 @@ public class Theatre {
     public Theatre(String theatreName, int numRows, int seatsPerRow) {
         this.theatreName = theatreName;
         int lastRow = 'A' + (numRows -1 );
-        System.out.println("Number code for A " + (int) 'A' + " Number code for amount of rows " + lastRow +  " Ascii code for number of rows " + (char) lastRow);
         for (char row = 'A'; row <=lastRow; row++){
             for(int seatNum = 1; seatNum <= seatsPerRow; seatNum++){
                 double price = 12.00;
@@ -33,7 +32,7 @@ public class Theatre {
             return seats.get(foundSeat).reserve();
         }
         else{
-            System.out.println("There is no seat " + seatNumber);
+            System.out.printf("There is no seat %s\n", seatNumber);
             return false;
         }
 
@@ -47,7 +46,7 @@ public class Theatre {
             return seats.get(foundSeat).cancel();
         }
         else{
-            System.out.println("There is no seat " + seatNumber);
+            System.out.printf("There is no seat %s\n", seatNumber);
             return false;
         }
     }
@@ -73,7 +72,7 @@ public class Theatre {
         public boolean reserve(){
             if (!this.reserved){
                 this.reserved = true;
-                System.out.println("Seat " + seatNumber + " reserved");
+                System.out.printf("Seat %s reserved\n",seatNumber);
                 return true;
             }
             else{
@@ -89,7 +88,7 @@ public class Theatre {
         public boolean cancel(){
             if(this.reserved){
                 this.reserved = false;
-                System.out.println("Reservation of seat " + seatNumber + " cancelled");
+                System.out.printf("Reservation of seat %s cancelled\n",seatNumber);
                 return true;
             }
             else{

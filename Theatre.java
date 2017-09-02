@@ -1,54 +1,73 @@
 import java.util.*;
+
 public class Theatre {
     public final String theatreName;
     private List<Seat> seats = new ArrayList<>();
+    private List<Seat> reservedSeats = new ArrayList<>();
 
     public Theatre(String theatreName, int numRows, int seatsPerRow) {
         this.theatreName = theatreName;
-        //using ascii to determine the amount of rows
         int lastRow = 'A' + (numRows -1 );
         System.out.println("Number code for A " + (int) 'A' + " Number code for amount of rows " + lastRow +  " Ascii code for number of rows " + (char) lastRow);
-        // saying for
         for (char row = 'A'; row <=lastRow; row++){
             for(int seatNum = 1; seatNum <= seatsPerRow; seatNum++){
-                Seat seat = new Seat(row + String.format("%02d",seatNum));
+                double price = 12.00;
+
+                if((row < 'D') && (seatNum >= 4 && seatNum <=9)){
+                    price = 14.00;
+                }
+                else if ((row < 'F') && (seatNum >= 4 && seatNum <=9)){
+                    price = 7.00;
+                }
+                Seat seat = new Seat(row + String.format("%02d",seatNum),price);
                 seats.add(seat);
             }
         }
     }
 
-    public String getTheatreName() {
-        return theatreName;
-    }
-
     public boolean reserveSeat(String seatNumber){
-        Seat requestedSeat = null;
-        for(Seat seat : seats){
-            if(seat.getSeatNumber().equals(seatNumber)){
-                requestedSeat = seat;
-                break;
-            }
+        Seat requestedSeat = new Seat(seatNumber, 0);
+        int foundSeat = Collections.binarySearch(seats,requestedSeat,null);
+        if(foundSeat >= 0){
+            reservedSeats.add(seats.get(foundSeat));
+            return seats.get(foundSeat).reserve();
         }
-        if(requestedSeat == null){
+        else{
             System.out.println("There is no seat " + seatNumber);
             return false;
         }
-        return requestedSeat.reserve();
 
     }
 
-    public void getSeats(){
-        for(Seat seat : seats){
-            System.out.println(seat.getSeatNumber());
+    public boolean cancelSeat(String seatNumber){
+        Seat requestedSeat = new Seat(seatNumber, 0);
+        int foundSeat = Collections.binarySearch(seats,requestedSeat,null);
+        if(foundSeat >= 0){
+            reservedSeats.remove(seats.get(foundSeat));
+            return seats.get(foundSeat).cancel();
+        }
+        else{
+            System.out.println("There is no seat " + seatNumber);
+            return false;
         }
     }
 
-    private class Seat {
+    public Collection<Seat> getSeats(){
+        return seats;
+    }
+
+    public Collection<Seat> getReservedSeats(){
+        return reservedSeats;
+    }
+
+    public class Seat implements Comparable<Seat> {
         private final String seatNumber;
+        private double price;
         private boolean reserved = false;
 
-        public Seat(String seatNumber) {
+        public Seat(String seatNumber, double price) {
             this.seatNumber = seatNumber;
+            this.price = price;
         }
 
         public boolean reserve(){
@@ -60,6 +79,11 @@ public class Theatre {
             else{
                 return false;
             }
+        }
+
+        @Override
+        public int compareTo(Seat seat) {
+            return this.seatNumber.compareToIgnoreCase(seat.getSeatNumber());
         }
 
         public boolean cancel(){
@@ -75,6 +99,10 @@ public class Theatre {
 
         public String getSeatNumber() {
             return seatNumber;
+        }
+
+        public double getPrice() {
+            return price;
         }
     }
 
